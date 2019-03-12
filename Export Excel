@@ -1,0 +1,48 @@
+Public Function Export_HRIS2()     'Export only if records exist
+    Dim objExcel As Object
+    Dim objBook  As Object
+    Dim objSheet As Object
+    Dim strFile, strSource  As String
+    Dim rs As Recordset
+    Dim objFSO As Object
+
+    Set objFSO = CreateObject("Scripting.Filesystemobject")
+
+    'strFile = Replace(Replace(CurrentProject.Path, "\3 Working Database", "\2 Client Final Data\HRIS\"), "C:\", "J:\")
+    strFile = "J:\SessionData\2019\ChenMed_2018_2019\Technology\2 PreEnroll\2 Client Final Data\HRIS\"
+    strFile = strFile & "2691_HRIS.xlsx"
+    strSource = "_EELayoutV8_ToExport"
+
+    Set rs = CurrentDb.OpenRecordset("SELECT * FROM " & strSource)
+    
+    If rs.RecordCount > 0 Then
+    
+        DoCmd.TransferSpreadsheet acExport, acSpreadsheetTypeExcel12Xml, strSource, strFile
+    
+        Set objExcel = CreateObject("Excel.Application")
+        Set objBook = objExcel.Workbooks.Open(strFile)
+        Set objSheet = objBook.Sheets(1)
+    
+        objSheet.name = "Import_File"
+        objSheet.Cells.EntireColumn.AutoFit
+    
+        objBook.Save
+        objBook.Saved = True
+        objBook.Close
+        Set objSheet = Nothing
+        Set objBook = Nothing
+        Set objExcel = Nothing
+        
+        objFSO.CopyFile strFile, Replace(strFile, ".xlsx", "_" & Format(Now(), "yyyymmdd") & ".xlsx")
+
+        'MsgBox "Census exported.", vbOKOnly
+    Else
+        MsgBox "No records to export.", vbOKOnly
+    End If
+    
+    rs.Close
+    Set rs = Nothing
+    Set objFSO = Nothing
+    On Error GoTo 0
+    
+End Function
