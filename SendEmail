@@ -1,0 +1,22 @@
+Public Function SendEmail()
+
+Dim varName As Variant
+Dim varCC As Variant
+Dim varSubject As Variant
+Dim varBody As Variant
+
+varName = "kenneth.e.king@aon.com"
+'varCC = "billy@gmail.com, joe@yahoo.com"
+'separate each email by a ','
+
+varSubject = "Base Reports Have Been Sent"
+'Email subject
+
+varBody = "The NotSeen, Coverage Summary, and EOI reports have been delivered via MFT4."
+
+'Body of the email
+DoCmd.SendObject , , , varName, varCC, , varSubject, varBody, True, False
+'Send email command. The True after "varBody" allows user to edit email before sending.
+'The False at the end will not send it as a Template File
+
+End Function
