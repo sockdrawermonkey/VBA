@@ -1,15 +1,12 @@
 Function Proc_ResaveFixBaseReports()
 On Error GoTo Proc_Run_Import_Err
 
-    Dim EEFilePath As String
-    Dim DepFilePath As String
-    Dim CovFilePath As String
     Dim NotSeenFilePath As String
     Dim CovSumPath As String
-     
+         
     Dim PostFilePath As String
     PostFilePath = Application.CurrentProject.Path
-    PostFilePath = "J:\SessionData\2019\Holland_Hospital_2019_2020\Technology\3 PostEnroll\6 Final Data\BaseReportHolder\"
+    PostFilePath = "J:\SessionData\2019\ChenMed_2018_2019\Technology\3 PostEnroll\6 Final Data\BaseReportsForAudits\"
     
     Dim strName As String
     Dim objSubFolder As Object
@@ -17,41 +14,33 @@ On Error GoTo Proc_Run_Import_Err
     Dim strFileDate As String
             
     'U2X Standard Reports:
-    CovSumPath = Dir(PostFilePath & "Base_CoverageSummaryReport*.xlsx")
-    NotSeenFilePath = Dir(PostFilePath & "NotSeenReport*.xlsx")
-        
-    'NotSeen - opens, saves and closes the xlsx file since it has errors on the import.
+    CovSumPath = Dir(PostFilePath & "Base_CoverageS*.xlsx")
+    NotSeenFilePath = Dir(PostFilePath & "NotSeenR*.xlsx")
     Dim XcelFile As Excel.Application
     Dim wb As Excel.Workbook
-
+    
+  'NotSeen - opens, saves and closes the xlsx file since it has errors on the import.
     Set XcelFile = New Excel.Application
-
     Set wb = XcelFile.Workbooks.Open(PostFilePath & NotSeenFilePath)
     XcelFile.DisplayAlerts = False
     wb.Save
     XcelFile.DisplayAlerts = True
     'wb.Save FileName:=PostFilePath & NotSeenFilePath, FileFormat:=56
-   
-    
     wb.Close
     Set XcelFile = Nothing
-    
+       
     'CovSum - opens, saves and closes the xlsx file since it has errors on the import.
     Set XcelFile = New Excel.Application
-
     Set wb = XcelFile.Workbooks.Open(PostFilePath & CovSumPath)
     XcelFile.DisplayAlerts = False
     wb.Save
     XcelFile.DisplayAlerts = True
     'wb.Save FileName:=PostFilePath & NotSeenFilePath, FileFormat:=56
+    wb.Close
+    Set XcelFile = Nothing
+       
         
-    wb.Close
-    Set XcelFile = Nothing
-         
-    wb.Close
-    Set XcelFile = Nothing
-         
-MsgBox "_01_Run_Import_Code!"
+MsgBox ".xlsx Files Updated!"
 
 Proc_Run_Import_Exit:
     Exit Function
