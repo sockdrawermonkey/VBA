@@ -1,0 +1,22 @@
+Public Function StripDashes(strData As String)
+    'EXAMPLE: STRING VALUE "123-4567" RETURNS STRING VALUE "1234567".
+    Dim I%
+    Dim strTemp
+    
+    If Len(strData) > 0 Then
+        If InStr(strData, "-") > 0 Then
+            StripDashes = ""
+            For I% = 1 To Len(strData)
+                If Mid$(strData, I%, 1) <> "-" Then
+                    strTemp = strTemp & Mid$(strData, I%, 1)
+                End If
+            Next I%
+            StripDashes = strTemp
+        Else
+            StripDashes = strData
+        End If
+    Else
+        StripDashes = ""
+    End If
+
+End Function
