@@ -1,0 +1,5 @@
+Public Function ProperCase(name As String) As String
+    'This wil convert a name to proper case
+    'example: FRANK to Frank
+    ProperCase = StrConv(name, vbProperCase)
+End Function
