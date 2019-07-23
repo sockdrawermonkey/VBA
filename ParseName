@@ -1,0 +1,141 @@
+Function ParseName(sFullName As String, sFormat As String, sPart As String) As String
+'*sFullName is a string containing the full name
+'*sFormat is a string containing the order in which sFullName is currently formatted (i.e. "LAST, FIRST MI")
+'*sPart is the part of the name that should be returned (FIRST, LAST, MI, MIDDLE)
+
+    
+    Dim sTemp As String
+    
+    Select Case UCase(sFormat)
+        Case "LAST, FIRST MI", "LAST, FIRST MIDDLE"
+        
+            Select Case UCase(sPart)
+                Case "First"
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, ",")))
+                    If InStr(sTemp, " ") > 0 Then
+                        ParseName = Left(sTemp, InStr(sTemp, " ") - 1)
+                    Else
+                        ParseName = sTemp
+                    End If
+                Case "MI"
+                    If Left(Right(sFullName, 2), 1) = " " Then
+                        ParseName = Right(sFullName, 1)
+                    Else
+                        ParseName = ""
+                    End If
+                Case "MIDDLE"
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, ",")))
+                    ParseName = Right(sTemp, Len(sTemp) - InStr(sTemp, " "))
+                Case "LAST"
+                    ParseName = Left(sFullName, InStr(sFullName, ",") - 1)
+                Case Else
+                    MsgBox ("An Invalid PART was passed to Function ParseName")
+            End Select
+            
+        Case "FIRST MI LAST", "FIRST MI. LAST"
+        
+            Select Case UCase(sPart)
+                Case "First"
+                    '"FIRST MI LAST", "FIRST MI. LAST", "FIRST MIDDLE LAST"
+                    ' ^---^            ^---^             ^---^
+                    ParseName = Left(sFullName, InStr(sFullName, " ") - 1)
+                    
+                Case "MI"
+                    '"FIRST MI LAST", "FIRST MI. LAST", "FIRST MIDDLE LAST"
+                    '       ^-----^          ^------^          ^---------^
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, " ")))
+                    
+                    If Mid(sTemp, 2, 1) = " " Or Mid(sTemp, 2, 1) = "." Then
+                        '"FIRST MI LAST", "FIRST MI. LAST", "FIRST MIDDLE LAST"
+                        '       ^                ^                 ^
+                        ParseName = Left(sTemp, 1)
+                    Else
+                        ParseName = ""
+                    End If
+                Case "MIDDLE"
+                    '"FIRST MI LAST", "FIRST MI. LAST"
+                    '       ^-----^          ^------^
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, " ")))
+                    
+                    If Mid(sTemp, 2, 1) = " " Or Mid(sTemp, 2, 1) = "." Then
+                        '"FIRST MI LAST", "FIRST MI. LAST", "FIRST MIDDLE LAST"
+                        '       ^                ^                 ^
+                        ParseName = Left(sTemp, 1)
+                    Else
+                        ParseName = ""
+                    End If
+                    
+                Case "LAST"
+                    '"FIRST M LAST"
+                    '       ^----^
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, " ")))
+                    
+                    If Mid(sTemp, 2, 1) = " " Or Mid(sTemp, 2, 1) = "." Then
+                        '"M LAST" "M. LAST"
+                        '   ^--^      ^--^
+                        ParseName = Right(sTemp, Len(sTemp) - InStr(sTemp, " "))
+                    Else
+                        ParseName = sTemp
+                    End If
+                Case Else
+                    MsgBox ("An Invalid PART was passed to Function ParseName")
+            End Select
+        
+        Case "FIRST MIDDLE LAST"
+            
+            Select Case UCase(sPart)
+                Case "First"
+                    '"FIRST MI LAST", "FIRST MI. LAST", "FIRST MIDDLE LAST"
+                    ' ^---^            ^---^             ^---^
+                    ParseName = Left(sFullName, InStr(sFullName, " ") - 1)
+                    
+                Case "MI"
+                    '"FIRST MI LAST", "FIRST MI. LAST", "FIRST MIDDLE LAST"
+                    '       ^-----^          ^------^          ^---------^
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, " ")))
+                    
+                    If InStr(sTemp, " ") > 3 Then
+                        '*Using 3 should avoid getting the wrong character if the EEs name is "JOHN DE MARCO"
+                        ParseName = Left(sTemp, 1)
+                    Else
+                        ParseName = ""
+                    End If
+                Case "MIDDLE"
+                    '"FIRST MIDDLE LAST"
+                    '       ^---------^
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, " ")))
+                    If InStr(sTemp, " ") > 3 Then
+                        '*Using 3 should avoid getting the wrong character if the EEs name is "JOHN DE MARCO"
+                        '"FIRST MIDDLE LAST"
+                        '       ^----^
+                        ParseName = Left(sTemp, InStr(sTemp, " ") - 1)
+                    Else
+                        ParseName = ""
+                    End If
+                    
+                Case "LAST"
+                    '"FIRST MIDDLE LAST"
+                    '       ^---------^
+                    sTemp = Trim(Right(sFullName, Len(sFullName) - InStr(sFullName, " ")))
+                    
+                    If InStr(sTemp, " ") > 3 Then
+                        '*Using 3 should avoid getting the correct characters if the EEs name is "JOHN DE MARCO"
+                        '"MIDDLE LAST"
+                        '        ^--^
+                        ParseName = Right(sTemp, Len(sTemp) - InStr(sTemp, " "))
+                    Else
+                        ParseName = sTemp
+                    End If
+                Case Else
+                    MsgBox ("An Invalid PART was passed to Function ParseName")
+            
+            End Select
+        
+    Case Else
+            
+            MsgBox ("An invalid NAME FORMAT was provided to Function ParseName")
+            
+    End Select
+
+
+End Function
